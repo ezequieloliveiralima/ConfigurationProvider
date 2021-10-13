@@ -96,6 +96,11 @@ public class URLConfigurationProvider: NSObject {
             
         urlString = urlString.replacingOccurrences(of: "${bundle}", with: Bundle.main.bundleURL.absoluteString)
         
+        guard let urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
+            abortFor(reason: .invalidURL, details: "Unable to convert URL: \(urlString)")
+            return nil
+        }
+        
         guard let url = NSURL(string: urlString) else {
             abortFor(reason: .invalidURL, details: "Unable to convert URL: \(urlString)")
             return nil
